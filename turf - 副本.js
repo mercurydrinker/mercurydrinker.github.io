@@ -21,50 +21,51 @@ map.on('load', function () {
                 });
             });
 
-            // 获取所有多边形的几何数据
-            const allPolygons = data.features.map(feature => feature.geometry);
+            // 使用 turf.flatten 确保所有的 MultiPolygon 被转换为 Polygon
+            const flattened = turf.flatten(data);
 
-            // 合并所有多边形
-            const mergedPolygon = turf.union(...allPolygons);
+            // 现在所有的要素都应该是 Polygon 类型，可以进行 dissolve 操作
+            // 注意：这个示例假设你不需要根据特定属性来合并多边形
+            // 如果需要，turf.dissolve 第二个参数可以是一个选项对象，指定根据哪个属性进行合并
+            const dissolved = turf.dissolve(flattened);
 
-            // 添加 GeoJSON 数据到地图
-            map.addSource('merged-polygon', {
+            // 添加合并后的多边形到地图
+            map.addSource('dissolved-polygon', {
                 'type': 'geojson',
-                'data': mergedPolygon
+                'data': dissolved
             });
 
-            // 添加合并后的多边形图层并填充颜色
             map.addLayer({
-                'id': 'merged-polygon-layer',
+                'id': 'dissolved-polygon-layer',
                 'type': 'fill',
-                'source': 'mergedPolygon',
+                'source': 'dissolved-polygon',
                 'paint': {
                     'fill-color': 'rgba(255, 255, 255, 0.5)', // 半透明白色填充
                     'fill-outline-color': 'white' // 边界颜色
                 }
             });
 
-            // 生成随机点
-            var numberOfPoints = 100; // 替换为您想要生成的随机点数量
-            var randomPoints = turf.randomPointWithin(numberOfPoints, mergedPolygon);
 
-            // 添加随机点图层
+            // 在合并后的多边形内部生成一百个随机点
+            const randomPoints = turf.randomPoint(100, { within: dissolved });
+            
+            // 添加随机点到地图上
             map.addSource('random-points', {
                 'type': 'geojson',
                 'data': randomPoints
             });
-
             map.addLayer({
                 'id': 'random-points-layer',
                 'type': 'circle',
                 'source': 'random-points',
                 'paint': {
                     'circle-radius': 5,
-                    'circle-color': 'red' // 随机点颜色
+                    'circle-color': 'red'
                 }
             });
         })
         .catch(error => {
             console.error('Error fetching GeoJSON:', error);
         });
+
 });
