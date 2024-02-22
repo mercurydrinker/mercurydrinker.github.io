@@ -142,4 +142,25 @@ map.on('load', function () {
                 });
         })
         .catch(error => console.error('Error:', error));
+
+});
+map.on('click', function(e) {
+    // 用户点击地图后显示Popup
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<div class="sketchfab-embed-wrapper">' +
+        '<iframe title="小胡2" frameborder="0" allowfullscreen mozallowfullscreen="true" ' +
+        'webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" ' +
+        'xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share ' +
+        'src="https://sketchfab.com/models/5a966962bf3c4f258ba8e8fddffeb106/embed">' +
+        '</iframe>' +
+        '<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">' +
+        '<a href="https://sketchfab.com/3d-models/2-5a966962bf3c4f258ba8e8fddffeb106?utm_medium=embed&utm_campaign=share-popup&utm_content=5a966962bf3c4f258ba8e8fddffeb106" target="_blank" ' +
+        'rel="nofollow" style="font-weight: bold; color: #1CAAD9;">小胡2</a> by ' +
+        '<a href="https://sketchfab.com/xiaofei.zhang2021?utm_medium=embed&utm_campaign=share-popup&utm_content=5a966962bf3c4f258ba8e8fddffeb106" target="_blank" ' +
+        'rel="nofollow" style="font-weight: bold; color: #1CAAD9;">xiaofei.zhang2021</a> on ' +
+        '<a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=5a966962bf3c4f258ba8e8fddffeb106" target="_blank" ' +
+        'rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a></p>' +
+                '</div>')
+        .addTo(map);
 });
